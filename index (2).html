@@ -1,0 +1,112 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Cosita Hermosa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .keyboard-bg {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(45deg, #0a0a0a, #1e1e1e, #0a0a0a);
+            overflow: hidden;
+            animation: rgbFlow 6s infinite ease-in-out;
+        }
+        .highlight-a {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10rem;
+            color: #00ffaa; /* Verde-azulado suave */
+            text-shadow: 0 0 15px rgba(0, 255, 170, 0.6), 0 0 30px rgba(0, 255, 170, 0.4);
+            animation: softGlow 3s ease-in-out infinite alternate;
+        }
+        @keyframes softGlow {
+            from { text-shadow: 0 0 10px rgba(0, 255, 170, 0.4), 0 0 20px rgba(0, 255, 170, 0.2); }
+            to { text-shadow: 0 0 20px rgba(0, 255, 170, 0.6), 0 0 40px rgba(0, 255, 170, 0.3); }
+        }
+        @keyframes rgbFlow {
+            0% { background-position: 0% 0%; background: linear-gradient(45deg, #0a0a0a, #1e1e1e, #ff5555, #0a0a0a); }
+            25% { background-position: 100% 25%; background: linear-gradient(45deg, #0a0a0a, #1e1e1e, #55ff55, #0a0a0a); }
+            50% { background-position: 0% 50%; background: linear-gradient(45deg, #0a0a0a, #1e1e1e, #5555ff, #0a0a0a); }
+            75% { background-position: 100% 75%; background: linear-gradient(45deg, #0a0a0a, #1e1e1e, #ffaa00, #0a0a0a); }
+            100% { background-position: 0% 0%; background: linear-gradient(45deg, #0a0a0a, #1e1e1e, #ff5555, #0a0a0a); }
+        }
+        .text-overlay {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 90%;
+            margin: 0 auto;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <div class="keyboard-bg">
+        <div class="highlight-a">A</div>
+
+        <!-- Texto -->
+        <div class="text-overlay max-w-2xl text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-pink-600 mb-6">Mi Cosita Hermosa</h1>
+            <p class="text-gray-800 text-base md:text-lg leading-relaxed">
+                Mi cosita hermosa, ya sé que cometemos errores pero como siempre digo, de los errores se aprende. Quieras o no, tenemos una relación súper sana y bonita la cual ni por el mínimo error quiero desperdiciarla. En este año de relación con risas y enojos, quiero decirte que gracias por todo y gracias por tenerme paciencia y darme mi tiempo para ese tipo de cosas que me parece una locura que alguien me haya podido convencer y darme la confianza necesaria para eso. Posta que gracias por todo y te amo muchísimo con el alma, sos de esas personas únicas las cuales con pequeños gestos hacen a alguien muy feliz. Sos lo mejor que me pudo haber pasado, no me pienso cansar de vos, siempre que cortamos llamada te extraño y ese sentimiento que siento por vos es único.  
+                <br><br>  
+                Y encima, posta que sos mi alegría todos los días, me encanta cómo me hacés reír con tus locuras y cómo me bancás cuando estoy medio perdido. Quiero seguir creciendo con vos, enfrentando todo lo que venga, porque con vos todo se siente más fácil y lindo. Gracias por estar siempre al pie del cañón, por esos mensajes que me sacan una sonrisa y por hacerme sentir tan especial, te amo con todo lo que soy y no cambio nada de esto por nada del mundo.  
+                <br><br>  
+                Además, posta que cada momento con vos es como un regalo, me copa cómo me sorprendés con tus ideas y cómo me das esa paz que no encuentro en ningún lado. Quiero seguir descubriendo todo con vos, desde las pavadas del día a día hasta los planes más grandes, porque con tu compañía todo tiene otro color. Gracias por aguantarme las mil charlas random y por esas videollamadas que me hacen sentir cerca tuyo a pesar de la distancia, sos mi refugio y mi locura favorita, y te prometo que voy a seguir dándote todo de mí porque vos te lo merecés más que nadie.
+            </p>
+        </div>
+    </div>
+
+    <!-- Pie de página -->
+    <footer class="text-center py-4 text-gray-600 bg-white">
+        <p>Con todo mi amor, siempre tuyo - 06/10/2025, 12:33 PM</p>
+    </footer>
+</body>
+</html>
